@@ -1,14 +1,19 @@
-from datetime import timedelta
-from datetime import datetime
-from time import sleep
+import argparse
+from timer import Timer
 
-usr_input = 15
-now = datetime.now()
-delta = timedelta(seconds=usr_input)
-target = now + delta
-while target > now:
-    sleep(1)
-    now = datetime.now()
-    time_left = target - now
-    print(f'\r{time_left}', end='')
-print('Done')
+def main():
+    parser = argparse.ArgumentParser(description='Wait for a specified amount of time')
+    parser.add_argument('duration', help='The amount of time to wait')
+    parser.add_argument('-i', '--interval', default=1, type=float, help='The pause between updates')
+    parser.add_argument('-s', '--suffix', default='m', type=str, choices=['M', 's', 'm', 'h', 'd', 'w'], help='The default suffix')
+    parser.add_argument('-q', '--quiet', action='store_true')
+    args = parser.parse_args()
+    duration = args.duration
+    interval = args.interval if args.interval is not None else 1
+    suffix = args.suffix if args.suffix else 'm'
+    quiet = args.quiet
+    t = Timer(duration, interval, suffix, quiet)
+    return t.wait()
+
+if __name__ == '__main__':
+    main()
